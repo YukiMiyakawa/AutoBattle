@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace AARPG.Battle
 {
-    [RequireComponent(typeof(CharactorInfo))]
+    [RequireComponent(typeof(CharactorStatus))]
     public class CharactorController : MonoBehaviour
     {
-        [SerializeField] List<CharactorInfo> charactorStatuses = new List<CharactorInfo>();
-        private CharactorInfo status;
+        [SerializeField] List<CharactorStatus> charactorStatuses = new List<CharactorStatus>();
+        private CharactorStatus status;
         private List<GambitDefinitionData> gambitDefinitionDatas;
 
         private void Awake()
         {
-            status = GetComponent<CharactorInfo>();
+            status = GetComponent<CharactorStatus>();
         }
 
         public void init()

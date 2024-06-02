@@ -1,9 +1,6 @@
-using UnityEngine;
-using static AARPG.Battle.Gambit.GambitConst;
-
 namespace AARPG.Battle
 {
-    public class CharactorInfo
+    public class CharactorStatus
     {
         // 各ステータス群
         public float hp { get; private set; } = 50;
@@ -14,12 +11,9 @@ namespace AARPG.Battle
         public float mde { get; private set; } = 10;
         public float agi { get; private set; } = 10;
 
-
         public void init()
         {
             // Todo マスタやプレイヤーデータからステータスと所属チームを定義
         }
-
     }
 }
-

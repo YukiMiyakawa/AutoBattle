@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AARPG.Battle.Gambit
 {
-    public class GambitDescriptionService : GambitJudgeLogic
+    public sealed class GambitDescriptionService : GambitJudgeLogic
     {
         /// <summary>
         /// HP/MP>ÅZ%
