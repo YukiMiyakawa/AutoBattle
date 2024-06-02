@@ -9,7 +9,7 @@ namespace AARPG.Battle.Gambit
         /// <summary>
         /// ガンビット判定メソッド
         /// </summary>
-        public GambitJudgeResult GambitJudge(GambitDefinitionModel gambitDefinitionModel, List<CharactorStatus> charactorList)
+        public GambitJudgeResult GambitJudge(GambitDefinitionModel gambitDefinitionModel, List<CharactorInfo> charactorList = null)
         {
             var gambit = gambitDefinitionModel.GambitDefinitionData;
 
@@ -39,7 +39,7 @@ namespace AARPG.Battle.Gambit
         /// ・HP/MP>〇%の
         /// ・HP/MP＜〇%の
         /// </summary>
-        private GambitJudgeResult StatusJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        private GambitJudgeResult StatusJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             switch (gambitDefinitionData.ComparisionOperator)
             {
@@ -65,7 +65,7 @@ namespace AARPG.Battle.Gambit
         /// ・近くに〇体以上
         /// ・最も近い/遠い
         /// </summary>
-        private GambitJudgeResult DistanceJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        private GambitJudgeResult DistanceJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             switch (gambitDefinitionData.Distance)
             {
@@ -85,32 +85,32 @@ namespace AARPG.Battle.Gambit
         /// <summary>
         /// いずれの条件にも満たない場合
         /// </summary>
-        private GambitJudgeResult DefaultJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        private GambitJudgeResult DefaultJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }
 
-        protected virtual GambitJudgeResult StatusLessJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        protected virtual GambitJudgeResult StatusLessJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }
-        protected virtual GambitJudgeResult StatusMoreJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        protected virtual GambitJudgeResult StatusMoreJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }
-        protected virtual GambitJudgeResult StatusMaxJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        protected virtual GambitJudgeResult StatusMaxJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }
-        protected virtual GambitJudgeResult StatusMinJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        protected virtual GambitJudgeResult StatusMinJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }
-        protected virtual GambitJudgeResult DistanceNearJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        protected virtual GambitJudgeResult DistanceNearJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }
-        protected virtual GambitJudgeResult DistanceFarJudge(GambitDefinitionData gambitDefinitionData, List<CharactorStatus> charactorList)
+        protected virtual GambitJudgeResult DistanceFarJudge(GambitDefinitionData gambitDefinitionData, List<CharactorInfo> charactorList)
         {
             return null;
         }

@@ -7,11 +7,11 @@ namespace AARPG.Battle.Gambit
 {
     public sealed class GambitJudgeResult
     {
-        public List<CharactorStatus> CharactorList { get; private set; }
+        public List<CharactorInfo> CharactorList { get; private set; }
         public string GambitDescription { get; private set; }
 
         public GambitJudgeResult(
-            List<CharactorStatus> charactorList = null, 
+            List<CharactorInfo> charactorList = null, 
             string gambitDeacription = null)
         {
             CharactorList = charactorList;

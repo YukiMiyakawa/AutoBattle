@@ -5,7 +5,7 @@ namespace AARPG.Battle
 {
     public class CharactorInfo
     {
-        public CharactorStatus Status { get; private set; }
+        public CharactorInfo Status { get; private set; }
         public TargetAttribute targetAttribute { get; private set; }
 
         [SerializeField] private TeamType teamType;
