@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: CharactorMansterTable
   m_EditorClassIdentifier: Assembly-CSharp:AARPG.Scriptable.Charactor:CharactorMansterTable
-  CharactorMansters: []
+  CharactorMansters:
+  - Id: 0
