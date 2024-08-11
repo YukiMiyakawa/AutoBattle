@@ -1,13 +1,20 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
-using Example;
+using System.Linq;
+using System.Security.Cryptography;
+using Character;
 using MessagePack;
 using MessagePack.Resolvers;
+using Unity.VisualScripting.FullSerializer;
 using UnityEditor;
-using UnityEngine.Timeline;
+using UnityEditor.VersionControl;
+using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public static class BinaryGenerator
 {
-    [MenuItem("Example/Generate Binary")]
+    [MenuItem("Tools/MasgterMemory/Generate Binary")]
     private static void Run()
     {
         // MessagePackの初期化（ボイラープレート）
@@ -19,28 +26,74 @@ public static class BinaryGenerator
         var options = MessagePackSerializerOptions.Standard.WithResolver(messagePackResolvers);
         MessagePackSerializer.DefaultOptions = options;
 
-        // Csvとかからデータを入れる（今回はテストのためコードで入れる）
-        var stageMasters = new StageMaster[]
+        var readObjects = Resources.LoadAll("Assets/ExternaResource/Master/Csv");
+
+        //指定したディレクトリに入っている全ファイルを取得(子ディレクトリも含む)
+        var directoryPath = "Assets/ExternaResource/Master/Csv";
+        string[] filePathArray = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+
+        //取得したファイルの中からアセットだけリストに追加する
+        List<UnityEngine.Object> assetList = new List<UnityEngine.Object>();
+        foreach (string filePath in filePathArray)
         {
-            new("stage-01-001", "初心者の森", 100, "enemy-01-001", 100, "resource-01-001"),
-            new("stage-01-002", "迷いの湿地帯", 200, "enemy-01-002", 200, "resource-01-002"),
-            new("stage-01-003", "炎の山脈", 400, "enemy-01-003", 400, "resource-01-003"),
-            new("stage-02-001", "氷結の洞窟", 500, "enemy-02-001", 500, "resource-02-001"),
-            new("stage-02-002", "幽霊の墓地", 600, "enemy-02-002", 600, "resource-02-002"),
-            new("stage-02-003", "竜の城塞", 1000, "enemy-02-003", 1000, "resource-02-003")
-        };
+            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(filePath);
+            if (asset != null)
+            {
+                assetList.Add(asset);
+            }
+        }
 
-        // DatabaseBuilderを使ってバイナリデータを生成する
-        var databaseBuilder = new DatabaseBuilder();
-        databaseBuilder.Append(stageMasters);
-        var binary = databaseBuilder.Build();
+        foreach (var asset in assetList)
+        {
+            var name = asset.name;
+            var csvFile = asset as UnityEngine.TextAsset;
+            var csvDatas = new List<string[]>();
 
-        // できたバイナリは永続化しておく
-        var path = "Assets/AABRPG/Script/Master/StageMaster.bytes";
+            if (csvFile == null)
+            {
+                continue;
+            }
+
+            var reader = new StringReader(csvFile.text);
+            while (reader.Peek() != -1)
+            {
+                string line = reader.ReadLine();
+                csvDatas.Add(line.Split(','));
+            }
+
+            if(name == "CharacterMaster")
+            {
+                var masters = new List<CharacterMaster>();
+                for (var i = 0; i < csvDatas.Count; i++)
+                {
+                    if (i < 3)
+                    {
+                        continue;
+                    }
+                    masters.Add(new CharacterMaster(
+                        Int64.Parse(csvDatas[i][0]),
+                        csvDatas[i][1],
+                        csvDatas[i][2]
+                        ));
+                }
+
+                var databaseBuilder = new DatabaseBuilder();
+                databaseBuilder.Append(masters);
+                var binary = databaseBuilder.Build();
+
+                BinarySave(binary, name);
+            }
+        }
+    }
+
+    private static void BinarySave(byte[] data, string name)
+    {
+        var path = $"Assets/ExternaResource/Master/Binary/{name}.bytes";
         var directory = Path.GetDirectoryName(path);
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
-        File.WriteAllBytes(path, binary);
+        File.WriteAllBytes(path, data);
         AssetDatabase.Refresh();
     }
 }
+
