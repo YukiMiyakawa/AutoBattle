@@ -6,94 +6,66 @@ using Unity.VisualScripting;
 
 namespace Character.Player
 {
-    public sealed class PlayerController : PlayerCommonCharacterController
+    public sealed class PlayerController : CommonCharacterController
     {
         [Header("キャラクター")]
         [SerializeField] private GameObject _player;
-        [Header("移動")]
-        [SerializeField] private float _addHorizontalRate = 20f;
-        [SerializeField] private float _addVerticalRate = 20f;
-        [Header("ジャンプ")]
-        [SerializeField] private float _addJumpForce = 1f;
-        [SerializeField] private float _jumpAttenuationRate = 0.1f;
-        [SerializeField] private float _checkDistance = 0.1f; // チェックする距離
-        [SerializeField] private LayerMask _groundLayer; // 地面のレイヤー
+        //[SerializeField] private float _jumpAttenuationRate = 0.1f;
+        //[SerializeField] private float _checkDistance = 0.1f; // チェックする距離
+        //[SerializeField] private LayerMask _groundLayer; // 地面のレイヤー
 
         // キャラクター
         private Rigidbody _playerRigidbody;
 
-        // ジャンプ
-        private float _jumpForceCash;
-        private bool _onJump;
-        private bool _isGrounded;
+        // コントローラー
+        private PlayerMoveController _playerMoveController;
 
         private void Awake()
         {
             _playerRigidbody = this.GetOrAddComponent<Rigidbody>();
-            _jumpForceCash = _addJumpForce;
+            _playerMoveController = this.GetOrAddComponent<PlayerMoveController>();
+
+            Initialize();
         }
         private void Start()
         {
-            OnMoveDirectionAsObserble().Subscribe(x => OnMove(x)).AddTo(this);
-            OnJumpAsObserble().Where(_ => BehaviorState != CharacterBehaviorState.Jump).Subscribe(_ => OnJump()).AddTo(this);
+            OnMoveDirectionAsObserble()
+                .Subscribe(x => 
+                {
+                    _playerMoveController.OnMove(x);
+                })
+                .AddTo(this);
+
+            OnJumpAsObserble()
+                .Where(_ => BehaviorState != CharacterBehaviorState.Jump)
+                .Subscribe(_ => 
+                {
+                    _playerMoveController.SetOnJump();
+                    SetBehaviorState(CharacterBehaviorState.Jump);
+                })
+                .AddTo(this);
         }
 
-        private void OnMove(Vector3 forward)
+        private void Initialize()
         {
-            if(forward == default)
-            {
-                return;
-            }
-
-            var moveAmount = new Vector3(forward.x * _addHorizontalRate, forward.y, forward.z * _addVerticalRate);
-            _playerRigidbody.AddForce(moveAmount);
-        }
-
-        private void OnJump()
-        {
-            _onJump = true;
+            _playerMoveController.Initialize(_playerRigidbody);
         }
 
         private void Update()
         {
-            UpdateOnJump();
+            _playerMoveController.UpdateOnJump();
+            UpdateBehaviorState();
         }
 
-        // NOTE : ジャンプ時キャラ回転を防ぐためConstraints　Rotation　xとzに制限をかける
-        private void UpdateOnJump()
+        private void UpdateBehaviorState()
         {
-            if (_jumpForceCash == _addJumpForce && BehaviorState == CharacterBehaviorState.Jump)
+            // ジャンプ後地面についたらステート更新
+            if(BehaviorState == CharacterBehaviorState.Jump)
             {
-                _isGrounded = Physics.Raycast(transform.position, Vector3.down, _checkDistance);
-                if (_isGrounded)
+                if (_playerMoveController.IsGrounded())
                 {
                     SetBehaviorState(CharacterBehaviorState.None);
                 }
-            }
-
-            if (_onJump)
-            {
-                if (_jumpForceCash <= 0)
-                {
-                    _playerRigidbody.useGravity = true;
-                    _jumpForceCash = _addJumpForce;
-                    _onJump = false;
-
-                    // ジャンプ方向ベロシティを0に
-                    var tmpVelosity = _playerRigidbody.velocity;
-                    tmpVelosity.y = 0;
-                    _playerRigidbody.velocity = tmpVelosity;
-
-                    return;
-                }
-                else if (_jumpForceCash == _addJumpForce)
-                {
-                    _playerRigidbody.useGravity = false;
-                    SetBehaviorState(CharacterBehaviorState.Jump);
-                }
-
-                _jumpForceCash -= _jumpAttenuationRate;
-                _playerRigidbody.AddForce(new Vector3(0, _jumpForceCash, 0));
             }
         }
     }

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Character.Common
 {
-    public class PlayerCommonCharacterController : MonoBehaviour, ICharacterController
+    public class CommonCharacterController : MonoBehaviour, ICharacterController
     {
         /// <summary>
         /// キャラクター行動ステート
