@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Character.Common.CommonCharacterController;
+using static Character.Common.PlayerCommonCharacterController;
 
 namespace Character.Player
 {

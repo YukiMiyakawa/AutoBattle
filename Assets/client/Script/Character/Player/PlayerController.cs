@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 
 namespace Character.Player
 {
-    public sealed class PlayerController : CommonCharacterController
+    public sealed class PlayerController : PlayerCommonCharacterController
     {
         [Header("キャラクター")]
         [SerializeField] private GameObject _player;
