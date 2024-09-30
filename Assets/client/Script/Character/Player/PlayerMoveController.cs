@@ -16,6 +16,8 @@ namespace Character.Player
         [SerializeField] private float _checkDistance = 0.1f; // チェックする距離
         [SerializeField] private LayerMask _groundLayer; // 地面のレイヤー
 
+        private PlayerAnimationController _playerAnimationController;
+
         // ジャンプ
         private float _jumpForceCash;
         private bool _onJump;
@@ -27,6 +29,7 @@ namespace Character.Player
         private void Awake()
         {
             _jumpForceCash = _addJumpForce;
+            _playerAnimationController = this.GetComponent<PlayerAnimationController>();
         }
 
 
@@ -52,6 +55,8 @@ namespace Character.Player
             // 向きの変更
             var targetRotation = Quaternion.LookRotation(forward);
             _transform.rotation = Quaternion.Slerp(_transform.rotation, targetRotation, Time.deltaTime * 10f);
+
+            _playerAnimationController.SetSpeedTrigger(forward.magnitude);
         }
 
         /// <summary>
@@ -59,6 +64,7 @@ namespace Character.Player
         /// </summary>
         public void SetOnJump()
         {
+            _playerAnimationController.SetJumpTrigger(true);
             _onJump = true;
         }
 
@@ -91,6 +97,7 @@ namespace Character.Player
                 }
                 else if (_jumpForceCash == _addJumpForce)
                 {
+                    _playerAnimationController.SetJumpTrigger(false);
                     _playerRigidbody.useGravity = false;
                 }
 
