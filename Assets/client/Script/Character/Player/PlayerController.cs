@@ -10,20 +10,19 @@ namespace Character.Player
     {
         [Header("キャラクター")]
         [SerializeField] private GameObject _player;
-        //[SerializeField] private float _jumpAttenuationRate = 0.1f;
-        //[SerializeField] private float _checkDistance = 0.1f; // チェックする距離
-        //[SerializeField] private LayerMask _groundLayer; // 地面のレイヤー
 
         // キャラクター
         private Rigidbody _playerRigidbody;
 
         // コントローラー
         private PlayerMoveController _playerMoveController;
+        private PlayerAnimationController _playerAnimationController;
 
         private void Awake()
         {
             _playerRigidbody = this.GetOrAddComponent<Rigidbody>();
             _playerMoveController = this.GetOrAddComponent<PlayerMoveController>();
+            _playerAnimationController = this.GetComponent<PlayerAnimationController>();
 
             Initialize();
         }
@@ -33,6 +32,7 @@ namespace Character.Player
                 .Subscribe(x => 
                 {
                     _playerMoveController.OnMove(x);
+                    _playerAnimationController.SetSpeedTrigger(x.magnitude);
                 })
                 .AddTo(this);
 
@@ -41,6 +41,7 @@ namespace Character.Player
                 .Subscribe(_ => 
                 {
                     _playerMoveController.SetOnJump();
+                    _playerAnimationController.SetJumpTrigger(true);
                     SetBehaviorState(CharacterBehaviorState.Jump);
                 })
                 .AddTo(this);
@@ -48,7 +49,7 @@ namespace Character.Player
 
         private void Initialize()
         {
-            _playerMoveController.Initialize(_playerRigidbody);
+            _playerMoveController.Initialize(_playerRigidbody, transform);
         }
 
         private void Update()
@@ -65,6 +66,7 @@ namespace Character.Player
                 if (_playerMoveController.IsGrounded())
                 {
                     SetBehaviorState(CharacterBehaviorState.None);
+                    _playerAnimationController.SetJumpTrigger(false);
                 }
             }
         }

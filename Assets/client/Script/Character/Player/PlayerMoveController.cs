@@ -22,6 +22,7 @@ namespace Character.Player
         public bool OnJump => _onJump;
 
         private Rigidbody _playerRigidbody;
+        private Transform _transform;
 
         private void Awake()
         {
@@ -29,9 +30,10 @@ namespace Character.Player
         }
 
 
-        public void Initialize(Rigidbody rb)
+        public void Initialize(Rigidbody rb, Transform trn)
         {
             _playerRigidbody = rb;
+            _transform = trn;
         }
 
         /// <summary>
@@ -46,6 +48,10 @@ namespace Character.Player
 
             var moveAmount = new Vector3(forward.x * _addHorizontalRate, forward.y, forward.z * _addVerticalRate);
             _playerRigidbody.AddForce(moveAmount);
+
+            // å¸Ç´ÇÃïœçX
+            var targetRotation = Quaternion.LookRotation(forward);
+            _transform.rotation = Quaternion.Slerp(_transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
 
         /// <summary>
