@@ -3,10 +3,11 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UniRx;
 using Unity.VisualScripting;
+using Character.Player.Common;
 
 namespace Character.Player
 {
-    public sealed class PlayerController : CommonCharacterController
+    public sealed class PlayerController : PlayerCommonController
     {
         [Header("キャラクター")]
         [SerializeField] private GameObject _player;
