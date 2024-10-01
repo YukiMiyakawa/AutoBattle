@@ -5,6 +5,6 @@ namespace Character.NPC.Common
 {
     public interface INpcBehavioeController
     {
-        IObservable<Unit> OnJumpAsObserble();
+        IObservable<Unit> OnMoveAsObserble();
     }
 }
