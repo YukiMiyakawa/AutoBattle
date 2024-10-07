@@ -46,31 +46,34 @@ namespace Common
         /// </summary>
         public IObservable<Unit> OnUpKeyAsObservable()
         {
-            return this.UpdateAsObservable().Where(_ => Input.GetKey(KeyCode.UpArrow));
+            return this.UpdateAsObservable().Where(_ => Input.GetKeyDown(KeyCode.UpArrow));
         }
 
         public IObservable<Unit> OnDownKeyAsObservable()
         {
-            return this.UpdateAsObservable().Where(_ => Input.GetKey(KeyCode.DownArrow));
+            return this.UpdateAsObservable().Where(_ => Input.GetKeyDown(KeyCode.DownArrow));
         }
         public IObservable<Unit> OnLeftKeyAsObservable()
         {
-            return this.UpdateAsObservable().Where(_ => Input.GetKey(KeyCode.LeftArrow));
+            return this.UpdateAsObservable().Where(_ => Input.GetKeyDown(KeyCode.LeftArrow));
         }
         public IObservable<Unit> OnRightKeyAsObservable()
         {
-            return this.UpdateAsObservable().Where(_ => Input.GetKey(KeyCode.RightArrow));
+            return this.UpdateAsObservable().Where(_ => Input.GetKeyDown(KeyCode.RightArrow));
         }
 
         public IObservable<Vector3> OnDirectionKeyAsObserble()
         {
             return this.UpdateAsObservable()
-                .Select(_ => new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
+                .Select(_ => 
+                    {
+                        return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                    });
         }
 
         public IObservable<Unit> OnJumpAsObserble()
         {
-            return this.UpdateAsObservable().Where(_ => Input.GetKey(KeyCode.Space));
+            return this.UpdateAsObservable().Where(_ => Input.GetKeyDown(KeyCode.Space));
         }
     }
 }

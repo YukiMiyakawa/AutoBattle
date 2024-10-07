@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using Character;
-using MessagePack;
-using MessagePack.Resolvers;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor;
 using UnityEditor.VersionControl;
@@ -18,72 +15,72 @@ public static class BinaryGenerator
     private static void Run()
     {
         // MessagePackの初期化（ボイラープレート）
-        var messagePackResolvers = CompositeResolver.Create(
-            MasterMemoryResolver.Instance, // 自動生成されたResolver（Namespaceごとに作られる）
-            GeneratedResolver.Instance, // 自動生成されたResolver
-            StandardResolver.Instance // MessagePackの標準Resolver
-        );
-        var options = MessagePackSerializerOptions.Standard.WithResolver(messagePackResolvers);
-        MessagePackSerializer.DefaultOptions = options;
+        // var messagePackResolvers = CompositeResolver.Create(
+        //     MasterMemoryResolver.Instance, // 自動生成されたResolver（Namespaceごとに作られる）
+        //     GeneratedResolver.Instance, // 自動生成されたResolver
+        //     StandardResolver.Instance // MessagePackの標準Resolver
+        // );
+        // var options = MessagePackSerializerOptions.Standard.WithResolver(messagePackResolvers);
+        // MessagePackSerializer.DefaultOptions = options;
 
-        var readObjects = Resources.LoadAll("Assets/ExternaResource/Master/Csv");
+        // var readObjects = Resources.LoadAll("Assets/ExternaResource/Master/Csv");
 
-        //指定したディレクトリに入っている全ファイルを取得(子ディレクトリも含む)
-        var directoryPath = "Assets/ExternaResource/Master/Csv";
-        string[] filePathArray = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+        // //指定したディレクトリに入っている全ファイルを取得(子ディレクトリも含む)
+        // var directoryPath = "Assets/ExternaResource/Master/Csv";
+        // string[] filePathArray = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
 
-        //取得したファイルの中からアセットだけリストに追加する
-        List<UnityEngine.Object> assetList = new List<UnityEngine.Object>();
-        foreach (string filePath in filePathArray)
-        {
-            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(filePath);
-            if (asset != null)
-            {
-                assetList.Add(asset);
-            }
-        }
+        // //取得したファイルの中からアセットだけリストに追加する
+        // List<UnityEngine.Object> assetList = new List<UnityEngine.Object>();
+        // foreach (string filePath in filePathArray)
+        // {
+        //     var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(filePath);
+        //     if (asset != null)
+        //     {
+        //         assetList.Add(asset);
+        //     }
+        // }
 
-        foreach (var asset in assetList)
-        {
-            var name = asset.name;
-            var csvFile = asset as UnityEngine.TextAsset;
-            var csvDatas = new List<string[]>();
+        // foreach (var asset in assetList)
+        // {
+        //     var name = asset.name;
+        //     var csvFile = asset as UnityEngine.TextAsset;
+        //     var csvDatas = new List<string[]>();
 
-            if (csvFile == null)
-            {
-                continue;
-            }
+        //     if (csvFile == null)
+        //     {
+        //         continue;
+        //     }
 
-            var reader = new StringReader(csvFile.text);
-            while (reader.Peek() != -1)
-            {
-                string line = reader.ReadLine();
-                csvDatas.Add(line.Split(','));
-            }
+        //     var reader = new StringReader(csvFile.text);
+        //     while (reader.Peek() != -1)
+        //     {
+        //         string line = reader.ReadLine();
+        //         csvDatas.Add(line.Split(','));
+        //     }
 
-            if(name == "CharacterMaster")
-            {
-                var masters = new List<CharacterMaster>();
-                for (var i = 0; i < csvDatas.Count; i++)
-                {
-                    if (i < 3)
-                    {
-                        continue;
-                    }
-                    masters.Add(new CharacterMaster(
-                        Int64.Parse(csvDatas[i][0]),
-                        csvDatas[i][1],
-                        csvDatas[i][2]
-                        ));
-                }
+        //     if(name == "CharacterMaster")
+        //     {
+        //         var masters = new List<CharacterMaster>();
+        //         for (var i = 0; i < csvDatas.Count; i++)
+        //         {
+        //             if (i < 3)
+        //             {
+        //                 continue;
+        //             }
+        //             masters.Add(new CharacterMaster(
+        //                 Int64.Parse(csvDatas[i][0]),
+        //                 csvDatas[i][1],
+        //                 csvDatas[i][2]
+        //                 ));
+        //         }
 
-                var databaseBuilder = new DatabaseBuilder();
-                databaseBuilder.Append(masters);
-                var binary = databaseBuilder.Build();
+        //         var databaseBuilder = new DatabaseBuilder();
+        //         databaseBuilder.Append(masters);
+        //         var binary = databaseBuilder.Build();
 
-                BinarySave(binary, name);
-            }
-        }
+        //         BinarySave(binary, name);
+        //     }
+        // }
     }
 
     private static void BinarySave(byte[] data, string name)

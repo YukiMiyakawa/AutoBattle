@@ -1,18 +1,19 @@
 using Common;
 using System;
 using UniRx;
+using UnityEngine;
 
 namespace Character.NPC.Common
 {
-    public class NpcCommonController : INpcController
+    public class NpcCommonController : MonoBehaviour, INpcController
     {
 
-        private INpcController _npcController;
+        private INpcBehavioeController _npcBehavioeController;
 
         // TODO キャラクター生成クラスで生成時渡す
-        public virtual void Initialize(INpcController npcController)
+        public virtual void Initialize(INpcBehavioeController npcController)
         {
-            _npcController = npcController;
+            _npcBehavioeController = npcController;
         }
 
         /// <summary>
@@ -36,9 +37,9 @@ namespace Character.NPC.Common
         /// <summary>
         /// 入力定義
         /// </summary>
-        public IObservable<Unit> OnMovenAsObserble()
+        public IObservable<Unit> OnMoveAsObserble()
         {
-            return _npcController.OnMovenAsObserble();
+            return _npcBehavioeController.OnMoveAsObserble();
         }
     }
 }

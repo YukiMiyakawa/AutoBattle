@@ -1,21 +1,56 @@
 using Character.Common;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class PlayerAnimationController : AnimationController
+namespace Character.Player
 {
-    // TODO AnimationController‚ÌŒ»Ý‚Ìstate‚ðŒ©‚Â‚ÂƒgƒŠƒK[‚ð“n‚·
-    private const string _jump = "Jump";
-    private const string _speed = "Speed";
-
-    public void SetJumpTrigger(bool value)
+    public class PlayerAnimationController : AnimationController
     {
-        SetAnimatorBool(_jump, value);
-    }
+        // Animationtrigger
+        private const string _jump = "Jump";
+        private const string _speed = "Speed";
 
-    public void SetSpeedTrigger(float speed)
-    {
-        SetAnimatorFloat(_speed, speed);
+        // Trigger
+        
+        public void SetSpeedTrigger(float speed)
+        {
+            SetAnimatorFloat(_speed, speed);
+        }
+
+        public void SetJumpTrigger()
+        {
+            SetTrigger(_jump);
+        }
+
+        // AnimationState
+        private const string _jumpState = "Jump";
+        
+        // StateJudge
+        public bool IsJumpState()
+        {
+            return IsCurrentAnimationState(_jumpState);
+        }
+
+        // AnimationEventFlg
+        private bool _isJumpStart;
+        private bool _isJumpTop;
+        public bool IsJumpStart => _isJumpStart;
+        public bool IsJumpTop => _isJumpTop;
+        
+        // AnimationEvent
+        public void SetIsJumpStart()
+        {
+            _isJumpStart = true;
+        }
+
+        public void SetIsJumpTop()
+        {
+            _isJumpTop = true;
+            Pause();
+        }
+
+        public void ResetIsJumpFlg()
+        {
+            _isJumpStart = false;
+            _isJumpTop = false;
+        }
     }
 }

@@ -12,6 +12,7 @@
 
 # UnityChan無視
 UnityChan/
+Assets/UnityChan/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data

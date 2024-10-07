@@ -5,6 +5,6 @@ namespace Character.NPC.Common
 {
     public interface INpcController
     {
-        IObservable<Unit> OnMovenAsObserble();
+        IObservable<Unit> OnMoveAsObserble();
     }
 }

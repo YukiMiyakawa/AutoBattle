@@ -29,5 +29,20 @@ namespace Character.Common
         {
             _animator.SetFloat(triggerName, value);
         }
+
+        public void SetTrigger(string triggerName)
+        {
+            _animator.SetTrigger(triggerName);
+        }
+
+        public void Pause()
+        {
+            _animator.speed = 0f;
+        }
+
+        public void Resume()
+        {
+            _animator.speed = 1f;
+        }
     }
 }

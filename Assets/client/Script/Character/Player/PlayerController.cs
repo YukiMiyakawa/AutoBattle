@@ -38,8 +38,7 @@ namespace Character.Player
                 .Where(_ => BehaviorState != CharacterBehaviorState.Jump)
                 .Subscribe(_ => 
                 {
-                    _playerMoveController.SetOnJump();
-                    SetBehaviorState(CharacterBehaviorState.Jump);
+                    _playerMoveController.JumpAsync(this.GetCancellationTokenOnDestroy()).Forget();
                 })
                 .AddTo(this);
         }
@@ -51,20 +50,24 @@ namespace Character.Player
 
         private void Update()
         {
-            _playerMoveController.UpdateOnJump();
             UpdateBehaviorState();
         }
 
         private void UpdateBehaviorState()
         {
-            // ジャンプ後地面についたらステート更新
-            if(BehaviorState == CharacterBehaviorState.Jump)
+            if(_playerMoveController.IsOnJump)
             {
-                if (_playerMoveController.IsGrounded())
-                {
-                    SetBehaviorState(CharacterBehaviorState.None);
-                }
+                SetBehaviorState(CharacterBehaviorState.Jump);
+                return;
             }
+
+            if(_playerMoveController.MoveAmount > 0.05f)
+            {
+                SetBehaviorState(CharacterBehaviorState.Walk);
+                return;
+            }
+
+            SetBehaviorState(CharacterBehaviorState.None);
         }
     }
 }
